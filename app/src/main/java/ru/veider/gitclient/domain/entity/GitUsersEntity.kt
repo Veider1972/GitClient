@@ -1,10 +1,12 @@
 package ru.veider.gitclient.domain.entity
 
+import com.google.gson.annotations.SerializedName
+
 data class GitUsersEntity (
-    val login: String,
-    val id: Long,
-    val avatar_url: String,
-    val html_url: String
+    @SerializedName("login") val login: String,
+    @SerializedName("id")val id: Long,
+    @SerializedName("avatar_url")val avatarURL: String,
+    @SerializedName("html_url")val htmlURL: String
 )
 
 //[

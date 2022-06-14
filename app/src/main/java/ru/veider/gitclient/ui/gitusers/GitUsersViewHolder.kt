@@ -15,10 +15,10 @@ class GitUsersViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
     fun onBind(gitUsersEntity: GitUsersEntity) {
         binding.apply {
-            userPhoto.load(gitUsersEntity.avatar_url)
+            userPhoto.load(gitUsersEntity.avatarURL)
             userLogin.text = gitUsersEntity.login
             userId.text = gitUsersEntity.id.toString()
-            userUrl.text = gitUsersEntity.html_url
+            userUrl.text = gitUsersEntity.htmlURL
         }
     }
 }
