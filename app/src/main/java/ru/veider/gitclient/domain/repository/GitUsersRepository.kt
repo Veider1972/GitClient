@@ -1,10 +1,10 @@
 package ru.veider.gitclient.domain.repository
 
-import ru.veider.gitclient.domain.entity.GitUsersEntity
+import ru.veider.gitclient.domain.entity.GitUsersData
 
 interface GitUsersRepository {
     fun getUsers(
-        onSuccess: (List<GitUsersEntity>) -> Unit,
+        onSuccess: (List<GitUsersData>) -> Unit,
         onError: ((Throwable) -> Unit)? = null
     )
 }

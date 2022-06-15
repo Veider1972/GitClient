@@ -3,9 +3,7 @@ package ru.veider.gitclient.ui.gitusers
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.veider.gitclient.R
-import ru.veider.gitclient.domain.entity.GitUsersEntity
-import ru.veider.gitclient.ui.gituser.GitUserFragment
+import ru.veider.gitclient.domain.entity.GitUsersData
 
 class GitUsersAdapter(
     val gitUsersFragment: GitUsersFragment
@@ -19,7 +17,7 @@ class GitUsersAdapter(
         fun onUserSelect(url:String)
     }
 
-    private var users = mutableListOf<GitUsersEntity>()
+    private var users = mutableListOf<GitUsersData>()
 
     override fun getItemId(position: Int) = users[position].id
 
@@ -36,7 +34,7 @@ class GitUsersAdapter(
     override fun getItemCount() = users.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(users: List<GitUsersEntity>) {
+    fun setData(users: List<GitUsersData>) {
         this.users.clear()
         this.users.addAll(users)
         notifyDataSetChanged()

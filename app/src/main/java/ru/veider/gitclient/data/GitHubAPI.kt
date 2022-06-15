@@ -1,7 +1,7 @@
 package ru.veider.gitclient.data
 
 import retrofit2.http.GET
-import ru.veider.gitclient.domain.entity.GitUsersEntity
+import ru.veider.gitclient.data.entity.GitUsersEntity
 
 interface GitHubAPI {
     @GET("/users")

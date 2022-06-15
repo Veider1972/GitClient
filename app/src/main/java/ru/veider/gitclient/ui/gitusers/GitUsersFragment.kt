@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.veider.gitclient.R
 import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
-import ru.veider.gitclient.domain.entity.GitUsersEntity
+import ru.veider.gitclient.domain.entity.GitUsersData
 import ru.veider.gitclient.ui.gituser.GitUserFragment
 
 class GitUsersFragment : Fragment(), GitUsersAdapter.OnItemClick {
@@ -68,7 +68,7 @@ class GitUsersFragment : Fragment(), GitUsersAdapter.OnItemClick {
         binding.usersRecyclerView.adapter = adapter
     }
 
-    private fun showUsers(users: List<GitUsersEntity>) {
+    private fun showUsers(users: List<GitUsersData>) {
         adapter.setData(users)
     }
 
