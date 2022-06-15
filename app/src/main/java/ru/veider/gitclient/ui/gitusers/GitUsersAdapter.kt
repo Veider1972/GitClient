@@ -15,18 +15,17 @@ class GitUsersAdapter(
         setHasStableIds(true)
     }
 
+    interface OnItemClick{
+        fun onUserSelect(url:String)
+    }
+
     private var users = mutableListOf<GitUsersEntity>()
 
     override fun getItemId(position: Int) = users[position].id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = GitUsersViewHolder(parent).apply {
         itemView.setOnClickListener {
-            gitUsersFragment
-                .parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.activity_main_container, GitUserFragment.newInstance(users[adapterPosition].htmlURL))
-                .addToBackStack("")
-                .commit()
+            gitUsersFragment.onUserSelect(users[adapterPosition].htmlURL)
         }
     }
 
