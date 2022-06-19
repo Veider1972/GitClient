@@ -14,10 +14,10 @@ class UsersViewModel(
     private val usersRepository: UsersRepository
 ) : ViewModel(), UsersContract.ViewModel {
 
-    override val usersLiveData: Observable<List<UserEntity>> = BehaviorSubject.create()
-    override val errorLiveData: Observable<Throwable> = BehaviorSubject.create()
-    override val progressLiveData: Observable<Boolean> = BehaviorSubject.create()
-    override var userPageLiveData: Observable<String> = BehaviorSubject.create()
+    override val usersObserver: Observable<List<UserEntity>> = BehaviorSubject.create()
+    override val errorObserver: Observable<Throwable> = BehaviorSubject.create()
+    override val progressObserver: Observable<Boolean> = BehaviorSubject.create()
+    override var userPageObserver: Observable<UserEntity> = BehaviorSubject.create()
 
     companion object {
         private var instance: UsersViewModel? = null
@@ -29,24 +29,22 @@ class UsersViewModel(
         loadData()
     }
 
-    override fun openUserPage(url: String) {
-        if (url.isNotEmpty()) {
-            userPageLiveData.mutable().onNext(url)
-        }
+    override fun openUserPage(userEntity: UserEntity) {
+        userPageObserver.mutable().onNext(userEntity)
     }
 
     private fun loadData() {
-        progressLiveData.mutable().onNext(true)
+        progressObserver.mutable().onNext(true)
         usersRepository.getUsers()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
-                    progressLiveData.mutable().onNext(false)
-                    usersLiveData.mutable().onNext(it)
+                    progressObserver.mutable().onNext(false)
+                    usersObserver.mutable().onNext(it)
                 },
                 onError = {
-                    progressLiveData.mutable().onNext(false)
-                    errorLiveData.mutable().onNext(it)
+                    progressObserver.mutable().onNext(false)
+                    errorObserver.mutable().onNext(it)
                 }
             )
     }

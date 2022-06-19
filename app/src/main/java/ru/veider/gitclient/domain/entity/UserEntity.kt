@@ -1,11 +1,13 @@
 package ru.veider.gitclient.domain.entity
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 
 data class UserEntity (
     val login: String,
     val id: Long,
-    val avatarURL: String,
+    val avatar: BitmapDrawable,
     val htmlURL: String
 )
 

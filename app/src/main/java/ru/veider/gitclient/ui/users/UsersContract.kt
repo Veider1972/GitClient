@@ -9,11 +9,11 @@ import ru.veider.gitclient.domain.entity.UserEntity
 interface UsersContract {
 
     interface ViewModel {
-        val usersLiveData: Observable<List<UserEntity>>
-        val errorLiveData: Observable<Throwable>
-        val progressLiveData: Observable<Boolean>
-        val userPageLiveData: Observable<String>
+        val usersObserver: Observable<List<UserEntity>>
+        val errorObserver: Observable<Throwable>
+        val progressObserver: Observable<Boolean>
+        val userPageObserver: Observable<UserEntity>
 
-        fun openUserPage(url: String)
+        fun openUserPage(userEntity: UserEntity)
     }
 }

@@ -6,16 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import ru.veider.gitclient.R
 import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
+import ru.veider.gitclient.ui.gitusers.UsersViewModelFactory
 import ru.veider.gitclient.ui.user.UserFragment
 
-class UsersFragment : Fragment(), UsersAdapter.OnItemClick {
+class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
 
@@ -28,10 +31,14 @@ class UsersFragment : Fragment(), UsersAdapter.OnItemClick {
     private val adapter by lazy { UsersAdapter(this) }
     private lateinit var viewModel: UsersContract.ViewModel
     private val viewModelDisposable = CompositeDisposable()
+    private val observerDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = UsersViewModel(app.usersRepository)
+        retainInstance = true
+        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.usersRepository))[UsersViewModel::class.java]
+        observerDisposable.addAll(
+            viewModel.userPageObserver.subscribeBy { openUserPage(it) })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -52,17 +59,16 @@ class UsersFragment : Fragment(), UsersAdapter.OnItemClick {
 
     private fun initViewModel() {
         viewModelDisposable.addAll(
-            viewModel.progressLiveData.subscribe { showProgress(it) },
-            viewModel.usersLiveData.subscribe { showUsers(it) },
-            viewModel.errorLiveData.subscribe { showError(it) },
-            viewModel.userPageLiveData.subscribeBy { openUserPage(it) })
+            viewModel.progressObserver.subscribe { showProgress(it) },
+            viewModel.usersObserver.subscribe { showUsers(it) },
+            viewModel.errorObserver.subscribe { showError(it) })
     }
 
-    private fun openUserPage(url: String) {
+    private fun openUserPage(userEntity: UserEntity) {
         parentFragmentManager
             .beginTransaction()
-            .add(R.id.activity_main_container, UserFragment.newInstance(url))
-            .addToBackStack("")
+            .add(R.id.activity_main_container, UserFragment.newInstance(userEntity))
+            .addToBackStack("user")
             .commit()
     }
 
@@ -92,7 +98,12 @@ class UsersFragment : Fragment(), UsersAdapter.OnItemClick {
         _binding = null
     }
 
-    override fun onUserSelect(url: String) {
-        viewModel.openUserPage(url)
+    override fun onDestroy() {
+        super.onDestroy()
+        observerDisposable.dispose()
+    }
+
+    override fun onUserSelect(userEntity: UserEntity) {
+        viewModel.openUserPage(userEntity)
     }
 }

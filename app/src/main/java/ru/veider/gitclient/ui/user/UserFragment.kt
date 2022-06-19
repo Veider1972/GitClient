@@ -9,6 +9,7 @@ import android.webkit.WebViewClient
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.veider.gitclient.R
 import ru.veider.gitclient.databinding.FragmentUserBinding
+import ru.veider.gitclient.domain.entity.UserEntity
 
 class UserFragment : Fragment(R.layout.fragment_user) {
 
@@ -16,10 +17,10 @@ class UserFragment : Fragment(R.layout.fragment_user) {
 
     private var isPageLoaded = false
     companion object {
-        private lateinit var gotoUrl: String
+        private lateinit var userEntity: UserEntity
 
-        fun newInstance(url: String): UserFragment {
-            gotoUrl = url
+        fun newInstance(userEntity: UserEntity): UserFragment {
+            this.userEntity =  userEntity
             return UserFragment()
         }
     }
@@ -31,27 +32,9 @@ class UserFragment : Fragment(R.layout.fragment_user) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val fragmentView = view
-        FragmentUserBinding.bind(view).webView.apply {
-            webViewClient = object : WebViewClient() {
-
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                    if (!isPageLoaded) {
-                        FragmentUserBinding.bind(fragmentView).progress.visibility = View.VISIBLE
-                    }
-                    super.onPageStarted(view, url, favicon)
-                }
-
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    FragmentUserBinding.bind(fragmentView).progress.visibility = View.GONE
-                    isPageLoaded = true
-                    super.onPageFinished(view, url)
-                }
-            }
-            if (gotoUrl.isNotEmpty()) {
-                loadUrl(gotoUrl)
-            }
-
+        FragmentUserBinding.bind(view).apply {
+            avatar.setImageDrawable(userEntity.avatar)
+            login.text = userEntity.login
         }
     }
 
