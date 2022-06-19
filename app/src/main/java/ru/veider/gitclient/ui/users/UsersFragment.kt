@@ -1,4 +1,4 @@
-package ru.veider.gitclient.ui.gitusers
+package ru.veider.gitclient.ui.users
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,30 +6,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import ru.veider.gitclient.R
 import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
-import ru.veider.gitclient.domain.entity.GitUsersData
-import ru.veider.gitclient.ui.gituser.GitUserFragment
+import ru.veider.gitclient.domain.entity.UserEntity
+import ru.veider.gitclient.ui.user.UserFragment
 
-class GitUsersFragment : Fragment(), GitUsersAdapter.OnItemClick {
+class UsersFragment : Fragment(), UsersAdapter.OnItemClick {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
 
     companion object {
-        fun newInstance() = GitUsersFragment()
+        fun newInstance() = UsersFragment()
     }
 
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
-    private val adapter by lazy { GitUsersAdapter(this) }
-    private lateinit var viewModel: GitUsersContract.ViewModel
+    private val adapter by lazy { UsersAdapter(this) }
+    private lateinit var viewModel: UsersContract.ViewModel
+    private val viewModelDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, GitUsersViewModelFactory.getInstance(app.gitUsersRepository))[GitUsersViewModel::class.java]
+        viewModel = UsersViewModel(app.usersRepository)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -49,16 +51,17 @@ class GitUsersFragment : Fragment(), GitUsersAdapter.OnItemClick {
     }
 
     private fun initViewModel() {
-        viewModel.progressLiveData.observe(viewLifecycleOwner) { showProgress(it) }
-        viewModel.usersLiveData.observe(viewLifecycleOwner) { showUsers(it) }
-        viewModel.errorLiveData.observe(viewLifecycleOwner) { showError(it) }
-        viewModel.userPageLiveData.observe(viewLifecycleOwner){openUserPage(it)}
+        viewModelDisposable.addAll(
+            viewModel.progressLiveData.subscribe { showProgress(it) },
+            viewModel.usersLiveData.subscribe { showUsers(it) },
+            viewModel.errorLiveData.subscribe { showError(it) },
+            viewModel.userPageLiveData.subscribeBy { openUserPage(it) })
     }
 
     private fun openUserPage(url: String) {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.activity_main_container, GitUserFragment.newInstance(url))
+            .add(R.id.activity_main_container, UserFragment.newInstance(url))
             .addToBackStack("")
             .commit()
     }
@@ -68,7 +71,7 @@ class GitUsersFragment : Fragment(), GitUsersAdapter.OnItemClick {
         binding.usersRecyclerView.adapter = adapter
     }
 
-    private fun showUsers(users: List<GitUsersData>) {
+    private fun showUsers(users: List<UserEntity>) {
         adapter.setData(users)
     }
 
@@ -85,6 +88,7 @@ class GitUsersFragment : Fragment(), GitUsersAdapter.OnItemClick {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModelDisposable.dispose()
         _binding = null
     }
 

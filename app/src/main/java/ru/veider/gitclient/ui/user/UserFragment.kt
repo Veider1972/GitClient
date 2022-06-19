@@ -1,4 +1,4 @@
-package ru.veider.gitclient.ui.gituser
+package ru.veider.gitclient.ui.user
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -6,10 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.veider.gitclient.R
 import ru.veider.gitclient.databinding.FragmentUserBinding
 
-class GitUserFragment : Fragment(R.layout.fragment_user) {
+class UserFragment : Fragment(R.layout.fragment_user) {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
 
@@ -17,9 +18,9 @@ class GitUserFragment : Fragment(R.layout.fragment_user) {
     companion object {
         private lateinit var gotoUrl: String
 
-        fun newInstance(url: String): GitUserFragment {
+        fun newInstance(url: String): UserFragment {
             gotoUrl = url
-            return GitUserFragment()
+            return UserFragment()
         }
     }
 

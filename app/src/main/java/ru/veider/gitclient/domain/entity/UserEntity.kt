@@ -1,6 +1,8 @@
 package ru.veider.gitclient.domain.entity
 
-data class GitUsersData (
+import android.graphics.drawable.Drawable
+
+data class UserEntity (
     val login: String,
     val id: Long,
     val avatarURL: String,

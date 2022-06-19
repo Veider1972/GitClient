@@ -3,7 +3,7 @@ package ru.veider.gitclient.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ru.veider.gitclient.R
-import ru.veider.gitclient.ui.gitusers.GitUsersFragment
+import ru.veider.gitclient.ui.users.UsersFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.activity_main_container, GitUsersFragment.newInstance())
+                .replace(R.id.activity_main_container, UsersFragment.newInstance())
                 .commit()
         }
     }

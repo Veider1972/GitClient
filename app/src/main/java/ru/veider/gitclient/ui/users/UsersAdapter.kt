@@ -1,13 +1,13 @@
-package ru.veider.gitclient.ui.gitusers
+package ru.veider.gitclient.ui.users
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.veider.gitclient.domain.entity.GitUsersData
+import ru.veider.gitclient.domain.entity.UserEntity
 
-class GitUsersAdapter(
-    val gitUsersFragment: GitUsersFragment
-) : RecyclerView.Adapter<GitUsersViewHolder>() {
+class UsersAdapter(
+    val usersFragment: UsersFragment
+) : RecyclerView.Adapter<UsersViewHolder>() {
 
     init {
         setHasStableIds(true)
@@ -17,24 +17,24 @@ class GitUsersAdapter(
         fun onUserSelect(url:String)
     }
 
-    private var users = mutableListOf<GitUsersData>()
+    private var users = mutableListOf<UserEntity>()
 
     override fun getItemId(position: Int) = users[position].id
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = GitUsersViewHolder(parent).apply {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = UsersViewHolder(parent).apply {
         itemView.setOnClickListener {
-            gitUsersFragment.onUserSelect(users[adapterPosition].htmlURL)
+            usersFragment.onUserSelect(users[adapterPosition].htmlURL)
         }
     }
 
-    override fun onBindViewHolder(holder: GitUsersViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
         holder.onBind(users[position])
     }
 
     override fun getItemCount() = users.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(users: List<GitUsersData>) {
+    fun setData(users: List<UserEntity>) {
         this.users.clear()
         this.users.addAll(users)
         notifyDataSetChanged()
