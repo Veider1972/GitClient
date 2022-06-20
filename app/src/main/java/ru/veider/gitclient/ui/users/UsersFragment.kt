@@ -6,16 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import ru.veider.gitclient.App
 import ru.veider.gitclient.R
-import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
-import ru.veider.gitclient.ui.gitusers.UsersViewModelFactory
 import ru.veider.gitclient.ui.user.UserFragment
 
 class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
@@ -36,7 +35,7 @@ class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.usersRepository))[UsersViewModel::class.java]
+        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(App.cachedUsersRepository))[UsersViewModel::class.java]
         observerDisposable.addAll(
             viewModel.userPageObserver.subscribeBy { openUserPage(it) })
     }
@@ -68,6 +67,7 @@ class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
         parentFragmentManager
             .beginTransaction()
             .add(R.id.activity_main_container, UserFragment.newInstance(userEntity))
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .addToBackStack("user")
             .commit()
     }

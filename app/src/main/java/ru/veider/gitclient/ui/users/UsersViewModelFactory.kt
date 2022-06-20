@@ -1,16 +1,15 @@
-package ru.veider.gitclient.ui.gitusers
+package ru.veider.gitclient.ui.users
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ru.veider.gitclient.domain.repository.UsersRepository
-import ru.veider.gitclient.ui.users.UsersViewModel
+import ru.veider.gitclient.domain.repository.CachedUsersRepository
 
 @Suppress("UNCHECKED_CAST")
-class UsersViewModelFactory(private val gitUsersRepository: UsersRepository) : ViewModelProvider.NewInstanceFactory() {
+class UsersViewModelFactory(private val cachedUsersRepository: CachedUsersRepository) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return with(modelClass) {
             when {
-                isAssignableFrom(UsersViewModel::class.java) -> UsersViewModel.getInstance(gitUsersRepository)
+                isAssignableFrom(UsersViewModel::class.java) -> UsersViewModel.getInstance(cachedUsersRepository)
                 else                                            -> throw IllegalArgumentException("Unknown viewModel class $modelClass")
             }
         } as T
@@ -18,8 +17,8 @@ class UsersViewModelFactory(private val gitUsersRepository: UsersRepository) : V
 
     companion object {
         private var instance: UsersViewModelFactory? = null
-        fun getInstance(gitUsersRepository: UsersRepository) = instance ?: synchronized(UsersViewModelFactory::class.java) {
-            instance ?: UsersViewModelFactory(gitUsersRepository).also { instance = it }
+        fun getInstance(cachedUsersRepository: CachedUsersRepository) = instance ?: synchronized(UsersViewModelFactory::class.java) {
+            instance ?: UsersViewModelFactory(cachedUsersRepository).also { instance = it }
         }
     }
 }

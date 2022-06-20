@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface GitHubAPI {
     @GET("/users")
-    fun getUsers(): Single<List<UserEntityDto>>
+    fun getUsers(): Single<List<RemoteUserEntityDto>>
 }

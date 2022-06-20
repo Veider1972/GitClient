@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GitClient</string>
+    <string name="web_data">Данные из сети</string>
+    <string name="local_data">Данные из кэша</string>
 </resources>

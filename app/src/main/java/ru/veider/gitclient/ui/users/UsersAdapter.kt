@@ -6,14 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.veider.gitclient.domain.entity.UserEntity
 
 class UsersAdapter(
-    val onItemClick: UsersViewHolder.OnItemClick
+    private val onItemClick: UsersViewHolder.OnItemClick
 ) : RecyclerView.Adapter<UsersViewHolder>() {
 
     init {
-        //setHasStableIds(true)
+        setHasStableIds(true)
     }
-
-
 
     private var users = mutableListOf<UserEntity>()
 
@@ -33,6 +31,4 @@ class UsersAdapter(
         this.users.addAll(users)
         notifyDataSetChanged()
     }
-
-
 }

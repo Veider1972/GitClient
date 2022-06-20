@@ -3,15 +3,13 @@ package ru.veider.gitclient.ui.users
 import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import io.reactivex.rxjava3.subjects.SingleSubject
 import ru.veider.gitclient.domain.entity.UserEntity
-import ru.veider.gitclient.domain.repository.UsersRepository
+import ru.veider.gitclient.domain.repository.CachedUsersRepository
 
 class UsersViewModel(
-    private val usersRepository: UsersRepository
+    private val cachedUsersRepository: CachedUsersRepository
 ) : ViewModel(), UsersContract.ViewModel {
 
     override val usersObserver: Observable<List<UserEntity>> = BehaviorSubject.create()
@@ -21,8 +19,8 @@ class UsersViewModel(
 
     companion object {
         private var instance: UsersViewModel? = null
-        fun getInstance(usersRepository: UsersRepository) =
-                instance?.apply {} ?: UsersViewModel(usersRepository).also { instance = it }
+        fun getInstance(cachedRemoteUsersRepository: CachedUsersRepository) =
+                instance?.apply {} ?: UsersViewModel(cachedRemoteUsersRepository).also { instance = it }
     }
 
     init {
@@ -35,7 +33,7 @@ class UsersViewModel(
 
     private fun loadData() {
         progressObserver.mutable().onNext(true)
-        usersRepository.getUsers()
+        cachedUsersRepository.getUsers()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
@@ -49,13 +47,8 @@ class UsersViewModel(
             )
     }
 
-    private fun <T> Observable<T>.mutable(): BehaviorSubject<T> {
+    private fun <T : Any> Observable<T>.mutable(): BehaviorSubject<T> {
         return this as? BehaviorSubject<T>
                 ?: throw IllegalStateException("It's not a BehaviorSubject")
-    }
-
-    private fun <T> Single<T>.single(): SingleSubject<T> {
-        return this as? SingleSubject<T>
-                ?: throw IllegalStateException("It's not a SingleSubject")
     }
 }
