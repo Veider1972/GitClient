@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import ru.veider.gitclient.R
-import ru.veider.gitclient.databinding.GitUsersItemBinding
-import ru.veider.gitclient.domain.entity.GitUsersEntity
+import ru.veider.gitclient.databinding.ItemUsersBinding
+import ru.veider.gitclient.domain.entity.GitUsersData
 
 class GitUsersViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-    LayoutInflater.from(parent.context).inflate(R.layout.git_users_item, parent, false)) {
+    LayoutInflater.from(parent.context).inflate(R.layout.item_users, parent, false)) {
 
-    private val binding = GitUsersItemBinding.bind(itemView)
+    private val binding = ItemUsersBinding.bind(itemView)
 
-    fun onBind(gitUsersEntity: GitUsersEntity) {
+    fun onBind(gitUsersEntity: GitUsersData) {
         binding.apply {
             userPhoto.load(gitUsersEntity.avatarURL)
             userLogin.text = gitUsersEntity.login

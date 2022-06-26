@@ -10,6 +10,9 @@ import ru.veider.gitclient.R
 import ru.veider.gitclient.databinding.FragmentUserBinding
 
 class GitUserFragment : Fragment(R.layout.fragment_user) {
+
+    private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
+
     private var isPageLoaded = false
     companion object {
         private lateinit var gotoUrl: String
