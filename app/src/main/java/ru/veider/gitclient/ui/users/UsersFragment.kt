@@ -17,7 +17,7 @@ import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.ui.user.UserFragment
 
-class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
+class UsersFragment : Fragment() {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
 
@@ -27,7 +27,9 @@ class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
 
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
-    private val adapter by lazy { UsersAdapter(this) }
+    private val adapter by lazy { UsersAdapter{
+        viewModel.openUserPage(it)
+    } }
     private lateinit var viewModel: UsersContract.ViewModel
     private val viewModelDisposable = CompositeDisposable()
     private val observerDisposable = CompositeDisposable()
@@ -101,9 +103,5 @@ class UsersFragment : Fragment(), UsersViewHolder.OnItemClick {
     override fun onDestroy() {
         super.onDestroy()
         observerDisposable.dispose()
-    }
-
-    override fun onUserSelect(userEntity: UserEntity) {
-        viewModel.openUserPage(userEntity)
     }
 }

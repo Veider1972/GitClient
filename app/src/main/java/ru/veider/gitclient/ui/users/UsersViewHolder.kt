@@ -8,14 +8,10 @@ import ru.veider.gitclient.R
 import ru.veider.gitclient.databinding.ItemUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
 
-class UsersViewHolder(parent: ViewGroup, private val onItemClick: OnItemClick) : RecyclerView.ViewHolder(
+class UsersViewHolder(parent: ViewGroup, private val onItemClick: (UserEntity)->Unit) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.item_users, parent, false)) {
 
     private val binding = ItemUsersBinding.bind(itemView)
-
-    interface OnItemClick{
-        fun onUserSelect(userEntity:UserEntity)
-    }
 
     fun onBind(usersEntity: UserEntity) {
         binding.apply {
@@ -24,7 +20,7 @@ class UsersViewHolder(parent: ViewGroup, private val onItemClick: OnItemClick) :
             userId.text = usersEntity.id.toString()
             userUrl.text = usersEntity.htmlURL
             itemView.setOnClickListener {
-                onItemClick.onUserSelect(usersEntity)
+                onItemClick(usersEntity)
             }
         }
     }

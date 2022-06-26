@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.veider.gitclient.domain.entity.UserEntity
 
 class UsersAdapter(
-    private val onItemClick: UsersViewHolder.OnItemClick
+    private val onItemClick: (UserEntity)->Unit
 ) : RecyclerView.Adapter<UsersViewHolder>() {
 
     init {
