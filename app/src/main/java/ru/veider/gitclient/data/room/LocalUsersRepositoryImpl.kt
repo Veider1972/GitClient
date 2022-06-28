@@ -7,8 +7,8 @@ class LocalUsersRepositoryImpl:LocalUsersRepository {
 
     private var db: UsersDatasource = UsersDatasource()
 
-    override fun getUsers(): List<UserEntity> {
-        return db.getUsers()
+    override fun getUsers(since:Long): List<UserEntity> {
+        return db.getUsers(since)
     }
 
     override fun cleanUsers() {

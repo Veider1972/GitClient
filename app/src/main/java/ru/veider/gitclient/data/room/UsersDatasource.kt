@@ -14,7 +14,7 @@ class UsersDatasource {
         .allowMainThreadQueries()
         .build()
 
-    fun getUsers() = db.usersDao().getUsers().mapTo(ArrayList()){
+    fun getUsers(since:Long) = db.usersDao().getUsers(since).mapTo(ArrayList()){
         userEntityFromRoomEntity(it)
     }
 
@@ -34,9 +34,8 @@ class UsersDatasource {
     )
 
     private fun roomEntityFromUserEntity(entity: UserEntity): RoomEntity = RoomEntity(
-        0,
-        entity.login,
         entity.id,
+        entity.login,
         entity.avatarURL,
         entity.htmlURL
     )

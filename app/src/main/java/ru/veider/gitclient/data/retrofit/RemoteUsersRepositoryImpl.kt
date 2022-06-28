@@ -18,8 +18,8 @@ class RemoteUsersRepositoryImpl : RemoteUsersRepository {
         .build()
         .create(GitHubAPI::class.java)
 
-    override fun getUsers(): Single<List<UserEntity>> {
-        return gitHubApi.getUsers().map { usersList ->
+    override fun getUsers(since:Long): Single<List<UserEntity>> {
+        return gitHubApi.getUsers(since).map { usersList ->
             usersList.map { user ->
                 user.toUserEntity()
             }

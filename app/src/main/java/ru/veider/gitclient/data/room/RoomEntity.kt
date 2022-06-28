@@ -5,9 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class RoomEntity(
-    @PrimaryKey(autoGenerate = true)  val ndx: Long=0,
+    @PrimaryKey(autoGenerate = false) val id: Long = 0,
     val login: String = "",
-    val id: Long = 0,
     val avatarURL: String = "",
     val htmlURL: String = ""
 )

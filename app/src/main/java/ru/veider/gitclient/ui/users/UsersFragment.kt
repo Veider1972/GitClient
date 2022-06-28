@@ -27,9 +27,11 @@ class UsersFragment : Fragment() {
 
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
-    private val adapter by lazy { UsersAdapter{
-        viewModel.openUserPage(it)
-    } }
+    private val adapter by lazy {
+        UsersAdapter {
+            viewModel.openUserPage(it)
+        }
+    }
     private lateinit var viewModel: UsersContract.ViewModel
     private val viewModelDisposable = CompositeDisposable()
     private val observerDisposable = CompositeDisposable()
@@ -45,6 +47,11 @@ class UsersFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_users, container, false)
         _binding = FragmentUsersBinding.bind(view)
+        binding.next.onClickObserver.subscribe{
+            if (it){
+                viewModel.nextUsers()
+            }
+        }
         return binding.root
     }
 

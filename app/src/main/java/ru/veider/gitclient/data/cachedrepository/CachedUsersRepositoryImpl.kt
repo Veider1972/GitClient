@@ -20,14 +20,14 @@ class CachedUsersRepositoryImpl : CachedUsersRepository {
     private val remoteRepository = RemoteUsersRepositoryImpl()
     private val localRepository = LocalUsersRepositoryImpl()
 
-    override fun getUsers(): Single<List<UserEntity>> {
-        return remoteRepository.getUsers()
+    override fun getUsers(since:Long): Single<List<UserEntity>> {
+        return remoteRepository.getUsers(since)
             .doOnSuccess { userList ->
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(App.instance.applicationContext, App.instance.applicationContext.getString(R.string.web_data), Toast.LENGTH_SHORT).show()
                 }
 
-                localRepository.cleanUsers()
+               // localRepository.cleanUsers()
                 for (user in userList) {
                     CoroutineScope(Dispatchers.Default).launch {
                         localRepository.insertUsers(user)
@@ -38,7 +38,7 @@ class CachedUsersRepositoryImpl : CachedUsersRepository {
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(App.instance.applicationContext, App.instance.applicationContext.getString(R.string.local_data), Toast.LENGTH_SHORT).show()
                 }
-                it.onSuccess(localRepository.getUsers())
+                it.onSuccess(localRepository.getUsers(since))
             }
     }
 }

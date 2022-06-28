@@ -7,14 +7,13 @@ import androidx.room.Query
 
 @Dao
 interface UsersDao {
-    @Query("SELECT * FROM RoomEntity")
-    fun getUsers(): List<RoomEntity>
+    @Query("SELECT * FROM RoomEntity WHERE ID>:since AND ID<:since+46")
+    fun getUsers(since:Long): List<RoomEntity>
 
     @Query("DELETE FROM RoomEntity")
     fun cleanUsers()
 
     @Insert(onConflict = REPLACE)
     fun insertUsers(roomEntity: RoomEntity)
-
 
 }

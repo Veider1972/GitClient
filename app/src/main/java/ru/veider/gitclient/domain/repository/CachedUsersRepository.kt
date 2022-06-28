@@ -4,5 +4,5 @@ import io.reactivex.rxjava3.core.Single
 import ru.veider.gitclient.domain.entity.UserEntity
 
 interface CachedUsersRepository {
-    fun getUsers() : Single<List<UserEntity>>
+    fun getUsers(since:Long) : Single<List<UserEntity>>
 }

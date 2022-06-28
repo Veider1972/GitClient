@@ -4,7 +4,7 @@ import ru.veider.gitclient.domain.entity.UserEntity
 
 interface LocalUsersRepository {
 
-    fun getUsers(): List<UserEntity>
+    fun getUsers(since:Long): List<UserEntity>
     fun cleanUsers()
     fun insertUsers(user: UserEntity)
 }
