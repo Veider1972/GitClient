@@ -3,9 +3,7 @@ package ru.veider.gitclient.data.room
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.domain.repository.LocalUsersRepository
 
-class LocalUsersRepositoryImpl:LocalUsersRepository {
-
-    private var db: UsersDatasource = UsersDatasource()
+class LocalUsersRepositoryImpl(private var db: UsersDatasource):LocalUsersRepository {
 
     override fun getUsers(since:Long): List<UserEntity> {
         return db.getUsers(since)

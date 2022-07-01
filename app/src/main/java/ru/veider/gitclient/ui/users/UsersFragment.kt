@@ -49,11 +49,14 @@ class UsersFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_users, container, false)
         _binding = FragmentUsersBinding.bind(view)
         bindingDisposable.add(
-            binding.next.onClickObserver.subscribe {
-                if (it) {
-                    viewModel.nextUsers()
+            binding.next.onClickObserver.subscribeBy(
+                onNext = {
+                    if (it) {
+                        viewModel.nextUsers()
+                    }
                 }
-            })
+            )
+        )
         return binding.root
     }
 
@@ -77,7 +80,7 @@ class UsersFragment : Fragment() {
     private fun openUserPage(userEntity: UserEntity) {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.activity_main_container, UserFragment().apply {
+            .add(R.id.activity_main_container, UserFragment().apply {
                 this.arguments = Bundle().apply {
                     putParcelable(UserEntity::class.java.toString(), userEntity)
                 }
@@ -118,5 +121,4 @@ class UsersFragment : Fragment() {
         super.onDestroy()
         observerDisposable.dispose()
     }
-
 }

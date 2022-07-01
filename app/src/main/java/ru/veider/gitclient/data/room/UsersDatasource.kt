@@ -1,29 +1,19 @@
 package ru.veider.gitclient.data.room
 
-import androidx.room.Room
-import ru.veider.gitclient.App
 import ru.veider.gitclient.domain.entity.UserEntity
 
-class UsersDatasource {
-    private val DB_NAME = "RoomEntity.db"
-    private var db: UsersDatabase = Room.databaseBuilder(
-        App.instance.baseContext,
-        UsersDatabase::class.java,
-        DB_NAME
-    )
-        .allowMainThreadQueries()
-        .build()
+class UsersDatasource(private var usersDao: UsersDao) {
 
-    fun getUsers(since:Long) = db.usersDao().getUsers(since).mapTo(ArrayList()){
+    fun getUsers(since:Long) = usersDao.getUsers(since).mapTo(ArrayList()){
         userEntityFromRoomEntity(it)
     }
 
     fun cleanUsers() {
-        db.usersDao().cleanUsers()
+        usersDao.cleanUsers()
     }
 
     fun insertUsers(user: UserEntity) {
-        db.usersDao().insertUsers(roomEntityFromUserEntity(user))
+        usersDao.insertUsers(roomEntityFromUserEntity(user))
     }
 
     private fun userEntityFromRoomEntity(entity: RoomEntity): UserEntity = UserEntity(
