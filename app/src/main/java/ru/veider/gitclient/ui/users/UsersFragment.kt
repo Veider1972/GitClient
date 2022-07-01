@@ -5,14 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import ru.veider.gitclient.App
 import ru.veider.gitclient.R
+import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.ui.user.UserFragment
@@ -20,10 +21,6 @@ import ru.veider.gitclient.ui.user.UserFragment
 class UsersFragment : Fragment() {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
-
-    companion object {
-        fun newInstance() = UsersFragment()
-    }
 
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
@@ -35,23 +32,28 @@ class UsersFragment : Fragment() {
     private lateinit var viewModel: UsersContract.ViewModel
     private val viewModelDisposable = CompositeDisposable()
     private val observerDisposable = CompositeDisposable()
+    private val bindingDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
-        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(App.cachedUsersRepository))[UsersViewModel::class.java]
-        observerDisposable.addAll(
-            viewModel.userPageObserver.subscribeBy { openUserPage(it) })
+        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.cachedUsersRepository))[UsersViewModel::class.java]
+        observerDisposable.add(
+            viewModel.userPageObserver.subscribeBy {
+                this.view?.apply {
+                    if (this.isVisible) openUserPage(it)
+                }
+            })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_users, container, false)
         _binding = FragmentUsersBinding.bind(view)
-        binding.next.onClickObserver.subscribe{
-            if (it){
-                viewModel.nextUsers()
-            }
-        }
+        bindingDisposable.add(
+            binding.next.onClickObserver.subscribe {
+                if (it) {
+                    viewModel.nextUsers()
+                }
+            })
         return binding.root
     }
 
@@ -75,9 +77,13 @@ class UsersFragment : Fragment() {
     private fun openUserPage(userEntity: UserEntity) {
         parentFragmentManager
             .beginTransaction()
-            .add(R.id.activity_main_container, UserFragment.newInstance(userEntity))
+            .replace(R.id.activity_main_container, UserFragment().apply {
+                this.arguments = Bundle().apply {
+                    putParcelable(UserEntity::class.java.toString(), userEntity)
+                }
+            })
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            .addToBackStack("user")
+            .addToBackStack(null)
             .commit()
     }
 
@@ -104,6 +110,7 @@ class UsersFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         viewModelDisposable.dispose()
+        bindingDisposable.dispose()
         _binding = null
     }
 
@@ -111,4 +118,5 @@ class UsersFragment : Fragment() {
         super.onDestroy()
         observerDisposable.dispose()
     }
+
 }

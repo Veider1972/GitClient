@@ -12,14 +12,7 @@ class UserFragment : Fragment(R.layout.fragment_user) {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
 
-    companion object {
-        private lateinit var userEntity: UserEntity
-
-        fun newInstance(userEntity: UserEntity): UserFragment {
-            this.userEntity =  userEntity
-            return UserFragment()
-        }
-    }
+    lateinit var userEntity: UserEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +21,15 @@ class UserFragment : Fragment(R.layout.fragment_user) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        FragmentUserBinding.bind(view).apply {
-            avatar.load(userEntity.avatarURL)
-            login.text = userEntity.login
+        arguments?.apply {
+            val userEntity = this.getParcelable(UserEntity::class.java.toString()) as? UserEntity
+            userEntity?.let {
+                FragmentUserBinding.bind(view).apply {
+                    avatar.load(userEntity.avatarURL)
+                    login.text = userEntity.login
+                }
+            }
         }
+
     }
 }

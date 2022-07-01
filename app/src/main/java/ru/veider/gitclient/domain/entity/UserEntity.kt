@@ -1,11 +1,15 @@
 package ru.veider.gitclient.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class UserEntity (
     val login: String,
     val id: Long,
     val avatarURL: String,
     val htmlURL: String
-)
+) : Parcelable
 
 //[
 //{
