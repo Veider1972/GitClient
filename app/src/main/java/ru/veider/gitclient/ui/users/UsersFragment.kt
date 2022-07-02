@@ -8,12 +8,11 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.veider.gitclient.R
-import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.ui.user.UserFragment
@@ -29,14 +28,13 @@ class UsersFragment : Fragment() {
             viewModel.openUserPage(it)
         }
     }
-    private lateinit var viewModel: UsersContract.ViewModel
+    private val viewModel: UsersViewModel by sharedViewModel()
     private val viewModelDisposable = CompositeDisposable()
     private val observerDisposable = CompositeDisposable()
     private val bindingDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.cachedUsersRepository))[UsersViewModel::class.java]
         observerDisposable.add(
             viewModel.userPageObserver.subscribeBy {
                 this.view?.apply {

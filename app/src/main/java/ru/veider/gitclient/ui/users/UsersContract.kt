@@ -1,7 +1,6 @@
 package ru.veider.gitclient.ui.users
 
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
 import ru.veider.gitclient.domain.entity.UserEntity
 
 interface UsersContract {

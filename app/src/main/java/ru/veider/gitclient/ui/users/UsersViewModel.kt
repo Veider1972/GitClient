@@ -18,9 +18,6 @@ class UsersViewModel(
     override var userPageObserver: Observable<UserEntity> = BehaviorSubject.create()
     override val userNextObserver: Observable<Long> = BehaviorSubject.create()
     private lateinit var usersList: List<UserEntity>
-    private val userNext = userNextObserver.subscribe{
-        loadData(it)
-    }
 
     companion object {
         private var instance: UsersViewModel? = null
@@ -30,6 +27,9 @@ class UsersViewModel(
 
     init {
         loadData(0)
+        userNextObserver.subscribe{
+            loadData(it)
+        }
     }
 
     override fun openUserPage(userEntity: UserEntity) {

@@ -3,7 +3,7 @@ package ru.veider.gitclient.data.retrofit
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.annotations.SerializedName
-import ru.veider.gitclient.App
+import ru.veider.gitclient.appContext
 import ru.veider.gitclient.domain.entity.UserEntity
 import java.io.File
 import java.io.FileOutputStream
@@ -18,7 +18,7 @@ class RemoteUserEntityDto(
     fun toUserEntity(): UserEntity {
         val url = URL(avatarURL)
         val bitmap = BitmapFactory.decodeStream(url.openStream())
-        val fileName =App.instance.cacheDir.absolutePath+"/$login.png"
+        val fileName = appContext.cacheDir.absolutePath+"/$login.png"
         val file = File(fileName)
         var fos: FileOutputStream? = null
         try {
@@ -31,5 +31,4 @@ class RemoteUserEntityDto(
         }
         return UserEntity(login, id, fileName, htmlURL)
     }
-
 }
