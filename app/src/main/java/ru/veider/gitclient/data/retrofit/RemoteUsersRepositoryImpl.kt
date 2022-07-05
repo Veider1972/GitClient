@@ -6,13 +6,14 @@ import ru.veider.gitclient.domain.repository.RemoteUsersRepository
 import java.lang.Exception
 
 class RemoteUsersRepositoryImpl(
-    private val gitHubApi: GitHubAPI
+    private val gitHubApi: GitHubAPI,
+    private val pathForTempImages: String
 ) : RemoteUsersRepository {
 
     override fun getUsers(since:Long): Single<List<UserEntity>> {
         return gitHubApi.getUsers(since).map { usersList ->
             usersList.map { user ->
-                user.toUserEntity()
+                user.toUserEntity(pathForTempImages)
             }
         }.doOnError { throw Exception() }
     }

@@ -15,10 +15,10 @@ class RemoteUserEntityDto(
     @SerializedName("avatar_url") val avatarURL: String,
     @SerializedName("html_url") val htmlURL: String
 ) {
-    fun toUserEntity(): UserEntity {
+    fun toUserEntity(path: String): UserEntity {
         val url = URL(avatarURL)
         val bitmap = BitmapFactory.decodeStream(url.openStream())
-        val fileName = appContext.cacheDir.absolutePath+"/$login.png"
+        val fileName = path+"/$login.png"
         val file = File(fileName)
         var fos: FileOutputStream? = null
         try {

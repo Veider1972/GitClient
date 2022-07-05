@@ -10,6 +10,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.veider.gitclient.appContext
 import ru.veider.gitclient.data.cachedrepository.CachedUsersRepositoryImpl
 import ru.veider.gitclient.data.retrofit.GitHubAPI
 import ru.veider.gitclient.data.retrofit.RemoteUsersRepositoryImpl
@@ -46,7 +47,7 @@ val appModule = module {
     single(named("usersDataSource")) { UsersDatasource(get(named("usersDao"))) }
     factory(named("handler")) { Handler(Looper.getMainLooper()) }
     single<LocalUsersRepository>(named("localRepository")) { LocalUsersRepositoryImpl(get(named("usersDataSource"))) }
-    single<RemoteUsersRepository>(named("remoteRepository")) { RemoteUsersRepositoryImpl(get(named("gitHubAPI"))) }
+    single<RemoteUsersRepository>(named("remoteRepository")) { RemoteUsersRepositoryImpl(get(named("gitHubAPI")), androidContext().cacheDir.absolutePath) }
     single<CachedUsersRepository> {
         CachedUsersRepositoryImpl(get(named("remoteRepository")),
                                   get(named("localRepository")),
