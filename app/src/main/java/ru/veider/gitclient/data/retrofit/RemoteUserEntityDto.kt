@@ -3,7 +3,6 @@ package ru.veider.gitclient.data.retrofit
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.annotations.SerializedName
-import ru.veider.gitclient.appContext
 import ru.veider.gitclient.domain.entity.UserEntity
 import java.io.File
 import java.io.FileOutputStream

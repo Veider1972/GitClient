@@ -1,13 +1,14 @@
 package ru.veider.gitclient
 
 import android.app.Application
-import android.content.Context
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.GlobalContext.startKoin
-import ru.veider.gitclient.di.appModule
+import ru.veider.gitclient.di.AppComponent
+import ru.veider.gitclient.di.AppModule
+import ru.veider.gitclient.di.DaggerAppComponent
 
 class App : Application() {
+
+    lateinit var appComponent: AppComponent
+
     companion object {
         lateinit var instance: App
     }
@@ -15,12 +16,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        startKoin {
-            androidLogger()
-            androidContext(this@App)
-            modules(appModule)
-        }
+        appComponent = DaggerAppComponent.builder().appModule(AppModule(this)).build()
     }
 }
-
-val appContext: Context get() = App.instance.applicationContext

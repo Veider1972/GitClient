@@ -5,12 +5,12 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import ru.veider.gitclient.App
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
+import javax.inject.Inject
 
-class UsersViewModel(
-    private val cachedUsersRepository: CachedUsersRepository
-) : ViewModel(), UsersContract.ViewModel {
+class UsersViewModel @Inject constructor(var cachedUsersRepository: CachedUsersRepository) : ViewModel(), UsersContract.ViewModel {
 
     override val usersObserver: Observable<List<UserEntity>> = BehaviorSubject.create()
     override val errorObserver: Observable<Throwable> = BehaviorSubject.create()
@@ -19,13 +19,8 @@ class UsersViewModel(
     override val userNextObserver: Observable<Long> = BehaviorSubject.create()
     private lateinit var usersList: List<UserEntity>
 
-    companion object {
-        private var instance: UsersViewModel? = null
-        fun getInstance(cachedRemoteUsersRepository: CachedUsersRepository) =
-                instance?.apply {} ?: UsersViewModel(cachedRemoteUsersRepository).also { instance = it }
-    }
-
     init {
+        App.instance.appComponent.inject(this)
         loadData(0)
         userNextObserver.subscribe{
             loadData(it)

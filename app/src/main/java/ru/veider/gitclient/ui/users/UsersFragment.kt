@@ -11,30 +11,35 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import ru.veider.gitclient.App
 import ru.veider.gitclient.R
 import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.ui.user.UserFragment
+import javax.inject.Inject
 
 class UsersFragment : Fragment() {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
 
+    @Inject lateinit var viewModel: UsersViewModel
+
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
+
     private val adapter by lazy {
         UsersAdapter {
             viewModel.openUserPage(it)
         }
     }
-    private val viewModel: UsersViewModel by sharedViewModel()
+
     private val viewModelDisposable = CompositeDisposable()
     private val observerDisposable = CompositeDisposable()
     private val bindingDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.instance.appComponent.inject(this)
         observerDisposable.add(
             viewModel.userPageObserver.subscribeBy {
                 this.view?.apply {

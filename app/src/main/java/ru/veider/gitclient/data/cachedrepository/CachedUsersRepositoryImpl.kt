@@ -12,11 +12,13 @@ import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import ru.veider.gitclient.domain.repository.LocalUsersRepository
 import ru.veider.gitclient.domain.repository.RemoteUsersRepository
+import javax.inject.Inject
 
-class CachedUsersRepositoryImpl(private val remoteRepository: RemoteUsersRepository,
-                                private val localRepository: LocalUsersRepository,
-                                private val handler: Handler,
-                                private val context: Context
+class CachedUsersRepositoryImpl @Inject constructor(
+    private val remoteRepository: RemoteUsersRepository,
+    private val localRepository: LocalUsersRepository,
+    private val handler: Handler,
+    private val context: Context
 ) : CachedUsersRepository {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
