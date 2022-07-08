@@ -15,6 +15,7 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import ru.veider.gitclient.R
 import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
+import ru.veider.gitclient.di.Injection
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.ui.user.UserFragment
 
@@ -36,7 +37,7 @@ class UsersFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.cachedUsersRepository))[UsersViewModel::class.java]
+        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.injection.cachedUsersRepository))[UsersViewModel::class.java]
         observerDisposable.add(
             viewModel.userPageObserver.subscribeBy {
                 this.view?.apply {
