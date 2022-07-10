@@ -18,5 +18,5 @@ import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import kotlin.reflect.KClass
 
 interface Injection {
-    val cachedUsersRepository: CachedUsersRepository
+    fun <T: Any> get(obj: KClass<T>): T
 }

@@ -19,6 +19,13 @@ import kotlin.reflect.KClass
 
 class InjectionImpl(app: App):Injection {
 
+    override fun <T : Any> get(obj: KClass<T>): T {
+        return when (obj) {
+            CachedUsersRepository::class -> cachedUsersRepository as T
+            else -> throw IllegalArgumentException("Have not class in graph")
+        }
+    }
+
     private val baseUrl = "https://api.github.com"
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -28,8 +35,8 @@ class InjectionImpl(app: App):Injection {
             .build()
     }
     private val gitHubAPI: GitHubAPI by lazy { retrofit.create(GitHubAPI::class.java) }
-    private val remoteRepository by lazy { RemoteUsersRepositoryImpl(gitHubAPI, app.cacheDir.absolutePath) }
 
+    private val remoteRepository by lazy { RemoteUsersRepositoryImpl(gitHubAPI, app.cacheDir.absolutePath) }
     private val dbName = "RoomEntity.db"
     private val usersDatabase: UsersDatabase = Room.databaseBuilder(
         app,
@@ -38,11 +45,11 @@ class InjectionImpl(app: App):Injection {
     )
         .allowMainThreadQueries()
         .build()
-    private var usersDao: UsersDao = usersDatabase.usersDao()
 
+    private var usersDao: UsersDao = usersDatabase.usersDao()
     private val usersDataSource by lazy { UsersDatasource(usersDao) }
     private val localRepository by lazy { LocalUsersRepositoryImpl(usersDataSource) }
     private val handler by lazy { Handler(Looper.getMainLooper()) }
-    override val cachedUsersRepository: CachedUsersRepository by lazy { CachedUsersRepositoryImpl(remoteRepository, localRepository, handler, app.applicationContext) }
+    val cachedUsersRepository: CachedUsersRepository by lazy { CachedUsersRepositoryImpl(remoteRepository, localRepository, handler, app.applicationContext) }
 
 }
