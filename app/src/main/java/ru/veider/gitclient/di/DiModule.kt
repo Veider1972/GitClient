@@ -1,5 +1,6 @@
 package ru.veider.gitclient.di
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.room.Room
@@ -17,15 +18,7 @@ import ru.veider.gitclient.data.room.UsersDatasource
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import kotlin.reflect.KClass
 
-class InjectionImpl(app: App):Injection {
-
-    override fun <T : Any> get(obj: KClass<T>): T {
-        return when (obj) {
-            CachedUsersRepository::class -> cachedUsersRepository as T
-            else -> throw IllegalArgumentException("Have not class in graph")
-        }
-    }
-
+class DiModule(context: Context, di:Di) {
     private val baseUrl = "https://api.github.com"
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -36,10 +29,10 @@ class InjectionImpl(app: App):Injection {
     }
     private val gitHubAPI: GitHubAPI by lazy { retrofit.create(GitHubAPI::class.java) }
 
-    private val remoteRepository by lazy { RemoteUsersRepositoryImpl(gitHubAPI, app.cacheDir.absolutePath) }
+    private val remoteRepository by lazy { RemoteUsersRepositoryImpl(gitHubAPI, context.cacheDir.absolutePath) }
     private val dbName = "RoomEntity.db"
     private val usersDatabase: UsersDatabase = Room.databaseBuilder(
-        app,
+        context,
         UsersDatabase::class.java,
         dbName
     )
@@ -50,6 +43,8 @@ class InjectionImpl(app: App):Injection {
     private val usersDataSource by lazy { UsersDatasource(usersDao) }
     private val localRepository by lazy { LocalUsersRepositoryImpl(usersDataSource) }
     private val handler by lazy { Handler(Looper.getMainLooper()) }
-    val cachedUsersRepository: CachedUsersRepository by lazy { CachedUsersRepositoryImpl(remoteRepository, localRepository, handler, app.applicationContext) }
-
+    val cachedUsersRepository: CachedUsersRepository by lazy { CachedUsersRepositoryImpl(remoteRepository, localRepository, handler, context.applicationContext) }
+    init{
+        di.add(CachedUsersRepository::class, cachedUsersRepository)
+    }
 }

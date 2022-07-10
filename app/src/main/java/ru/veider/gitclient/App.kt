@@ -2,15 +2,17 @@ package ru.veider.gitclient
 
 import android.app.Application
 import androidx.fragment.app.Fragment
-import ru.veider.gitclient.di.Injection
-import ru.veider.gitclient.di.InjectionImpl
+import ru.veider.gitclient.di.Di
+import ru.veider.gitclient.di.DiModule
 
 class App : Application() {
-    lateinit var injection : Injection
+    lateinit var di : Di
 
     override fun onCreate() {
         super.onCreate()
-        injection = InjectionImpl(this)
+        di = Di().apply {
+            DiModule(this@App,this)
+        }
     }
 }
 
