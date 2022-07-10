@@ -17,31 +17,6 @@ import ru.veider.gitclient.data.room.UsersDatasource
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import kotlin.reflect.KClass
 
-class Injection(app: App) {
-
-    private val baseUrl = "https://api.github.com"
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-    private val gitHubAPI: GitHubAPI by lazy { retrofit.create(GitHubAPI::class.java) }
-    private val remoteRepository by lazy { RemoteUsersRepositoryImpl(gitHubAPI, app.cacheDir.absolutePath) }
-
-    private val dbName = "RoomEntity.db"
-    private val usersDatabase: UsersDatabase = Room.databaseBuilder(
-        app,
-        UsersDatabase::class.java,
-        dbName
-    )
-        .allowMainThreadQueries()
-        .build()
-    private var usersDao: UsersDao = usersDatabase.usersDao()
-
-    private val usersDataSource by lazy { UsersDatasource(usersDao) }
-    private val localRepository by lazy { LocalUsersRepositoryImpl(usersDataSource) }
-    private val handler by lazy { Handler(Looper.getMainLooper()) }
-    val cachedUsersRepository: CachedUsersRepository by lazy { CachedUsersRepositoryImpl(remoteRepository, localRepository, handler, app.applicationContext) }
+interface Injection {
+    val cachedUsersRepository: CachedUsersRepository
 }
