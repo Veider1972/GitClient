@@ -2,17 +2,18 @@ package ru.veider.gitclient
 
 import android.app.Application
 import androidx.fragment.app.Fragment
-import ru.veider.gitclient.di.Di
-import ru.veider.gitclient.di.DiModule
+import ru.veider.gitclient.di.appModule
 
 class App : Application() {
-    lateinit var di : Di
+
+    companion object{
+        lateinit var instance: App
+    }
 
     override fun onCreate() {
         super.onCreate()
-        di = Di.apply {
-            DiModule(this@App,this)
-        }
+        instance = this
+        appModule.install()
     }
 }
 
