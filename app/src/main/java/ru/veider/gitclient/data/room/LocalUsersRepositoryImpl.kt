@@ -1,9 +1,12 @@
 package ru.veider.gitclient.data.room
 
+import ru.veider.gitclient.di.inject
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.domain.repository.LocalUsersRepository
 
-class LocalUsersRepositoryImpl(private var db: UsersDatasource):LocalUsersRepository {
+class LocalUsersRepositoryImpl():LocalUsersRepository {
+
+    private val db: UsersDatasource by inject()
 
     override fun getUsers(since:Long): List<UserEntity> {
         return db.getUsers(since)

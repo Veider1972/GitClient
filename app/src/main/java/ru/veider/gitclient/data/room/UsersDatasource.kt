@@ -1,8 +1,11 @@
 package ru.veider.gitclient.data.room
 
+import ru.veider.gitclient.di.inject
 import ru.veider.gitclient.domain.entity.UserEntity
 
-class UsersDatasource(private var usersDao: UsersDao) {
+class UsersDatasource() {
+
+    private val usersDao: UsersDao by inject()
 
     fun getUsers(since:Long) = usersDao.getUsers(since).mapTo(ArrayList()){
         userEntityFromRoomEntity(it)

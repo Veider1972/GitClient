@@ -16,6 +16,7 @@ import ru.veider.gitclient.R
 import ru.veider.gitclient.app
 import ru.veider.gitclient.databinding.FragmentUsersBinding
 import ru.veider.gitclient.di.Di
+import ru.veider.gitclient.di.inject
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import ru.veider.gitclient.ui.user.UserFragment
@@ -35,10 +36,11 @@ class UsersFragment : Fragment() {
     private val viewModelDisposable = CompositeDisposable()
     private val observerDisposable = CompositeDisposable()
     private val bindingDisposable = CompositeDisposable()
+    private val cachedUsersRepository : CachedUsersRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(app.di.get(CachedUsersRepository::class)))[UsersViewModel::class.java]
+        viewModel = ViewModelProvider(this, UsersViewModelFactory.getInstance(cachedUsersRepository))[UsersViewModel::class.java]
         observerDisposable.add(
             viewModel.userPageObserver.subscribeBy {
                 this.view?.apply {

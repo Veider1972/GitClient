@@ -8,18 +8,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.veider.gitclient.R
+import ru.veider.gitclient.di.inject
 import ru.veider.gitclient.domain.entity.UserEntity
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import ru.veider.gitclient.domain.repository.LocalUsersRepository
 import ru.veider.gitclient.domain.repository.RemoteUsersRepository
 
-class CachedUsersRepositoryImpl(private val remoteRepository: RemoteUsersRepository,
-                                private val localRepository: LocalUsersRepository,
-                                private val handler: Handler,
-                                private val context : Context
-) : CachedUsersRepository {
+class CachedUsersRepositoryImpl : CachedUsersRepository {
 
     private val TAG = "App ${this::class.java.simpleName} : ${this.hashCode()}"
+
+    private val remoteRepository: RemoteUsersRepository by inject()
+    private val localRepository: LocalUsersRepository by inject()
+    private val handler: Handler by inject()
+    private val context : Context by inject()
 
     override fun getUsers(since:Long): Single<List<UserEntity>> {
         return remoteRepository.getUsers(since)

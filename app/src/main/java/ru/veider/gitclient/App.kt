@@ -10,7 +10,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        di = Di().apply {
+        di = Di.apply {
             DiModule(this@App,this)
         }
     }
