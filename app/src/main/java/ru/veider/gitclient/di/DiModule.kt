@@ -17,27 +17,26 @@ import ru.veider.gitclient.data.room.UsersDatasource
 import ru.veider.gitclient.domain.repository.CachedUsersRepository
 import ru.veider.gitclient.domain.repository.LocalUsersRepository
 import ru.veider.gitclient.domain.repository.RemoteUsersRepository
-import kotlin.reflect.KClass
 
 val appModule = Module {
-    val baseUrl = "https://api.github.com"
-    val dbName = "RoomEntity.db"
+    singleton("baseUrl") { "https://api.github.com" }
+    singleton("dbName") { "RoomEntity.db" }
     singleton<Context> { App.instance }
     singleton<Retrofit> {
         Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(get<String>("baseUrl"))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
     singleton<GitHubAPI> { get<Retrofit>().create(GitHubAPI::class.java) }
-    singleton<String> { get<Context>().cacheDir.absolutePath }
+    singleton("path") { get<Context>().cacheDir.absolutePath }
     singleton<RemoteUsersRepository> { RemoteUsersRepositoryImpl() }
     singleton {
         Room.databaseBuilder(
             get(),
             UsersDatabase::class.java,
-            dbName
+            get("dbName")
         )
             .allowMainThreadQueries()
             .build()
@@ -48,36 +47,3 @@ val appModule = Module {
     fabric { Handler(Looper.getMainLooper()) }
     singleton<CachedUsersRepository> { CachedUsersRepositoryImpl() }
 }
-
-//class DiModule(context: Context, di: Di) {
-//    private val baseUrl = "https://api.github.com"
-//    private val dbName = "RoomEntity.db"
-//
-//    init {
-//        di.add(Context::class, Singleton { context })
-//        di.add(Retrofit::class, Singleton {
-//            Retrofit.Builder()
-//                .baseUrl(baseUrl)
-//                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build()
-//        })
-//        di.add(GitHubAPI::class, Singleton { get<Retrofit>().create(GitHubAPI::class.java) })
-//        di.add(String::class, Singleton { get<Context>().cacheDir.absolutePath })
-//        di.add(RemoteUsersRepository::class, Singleton { RemoteUsersRepositoryImpl() })
-//        di.add(UsersDatabase::class, Singleton {
-//            Room.databaseBuilder(
-//                get(),
-//                UsersDatabase::class.java,
-//                dbName
-//            )
-//                .allowMainThreadQueries()
-//                .build()
-//        })
-//        di.add(UsersDao::class, Singleton { get<UsersDatabase>().usersDao() })
-//        di.add(UsersDatasource::class, Singleton { UsersDatasource() })
-//        di.add(LocalUsersRepository::class, Singleton { LocalUsersRepositoryImpl() })
-//        di.add(Handler::class, Fabric { Handler(Looper.getMainLooper()) })
-//        di.add(CachedUsersRepository::class, Singleton { CachedUsersRepositoryImpl() })
-//    }
-//}
